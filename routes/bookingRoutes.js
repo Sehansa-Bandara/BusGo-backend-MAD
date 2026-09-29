@@ -1,0 +1,1 @@
+// Booking management routes placeholder
