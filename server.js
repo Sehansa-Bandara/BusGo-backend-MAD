@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const busRoutes = require('./routes/busRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(cors());
 // Enable JSON request parsing
 app.use(express.json());
 
-// Mount Authentication Routes
+// Mount Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/buses', busRoutes);
 
 // Root Endpoint
 app.get('/', (req, res) => {
