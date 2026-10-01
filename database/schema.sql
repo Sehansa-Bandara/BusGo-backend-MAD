@@ -175,6 +175,15 @@ CREATE TABLE IF NOT EXISTS driver_locations (
     CONSTRAINT unique_driver_location UNIQUE (bus_id, driver_id)
 );
 
+-- Device Tokens Table (FCM Tokens for Push Notifications)
+CREATE TABLE IF NOT EXISTS device_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 3. Create Indexes
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
@@ -188,6 +197,7 @@ CREATE INDEX IF NOT EXISTS idx_bookings_bus_id ON bookings(bus_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_travel_date ON bookings(travel_date);
 CREATE INDEX IF NOT EXISTS idx_alerts_bus_id ON alerts(bus_id);
 CREATE INDEX IF NOT EXISTS idx_driver_locations_bus_id ON driver_locations(bus_id);
+CREATE INDEX IF NOT EXISTS idx_device_tokens_user_id ON device_tokens(user_id);
 
 -- 4. Seed Data (Development & Testing)
 
