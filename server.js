@@ -8,6 +8,7 @@ const busRoutes = require('./routes/busRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -15,6 +16,9 @@ const PORT = process.env.PORT || 5000;
 
 // Enable CORS
 app.use(cors());
+
+// Mount payment routes (handles raw webhook body before general express.json)
+app.use('/api/payments', paymentRoutes);
 
 // Enable JSON request parsing
 app.use(express.json());

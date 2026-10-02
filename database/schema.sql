@@ -46,6 +46,12 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+DO $$ BEGIN
+    CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCEEDED', 'FAILED', 'CANCELLED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 -- 2. Create Tables
 
 -- Users Table
@@ -139,6 +145,18 @@ CREATE TABLE IF NOT EXISTS tickets (
     cancelled_at TIMESTAMPTZ
 );
 
+-- Payments Table (Stripe Payment Integration)
+CREATE TABLE IF NOT EXISTS payments (
+    id SERIAL PRIMARY KEY,
+    booking_id INT NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
+    stripe_payment_intent_id VARCHAR(255) UNIQUE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(10) NOT NULL DEFAULT 'lkr',
+    status payment_status NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Alerts Table
 CREATE TABLE IF NOT EXISTS alerts (
     id SERIAL PRIMARY KEY,
@@ -195,6 +213,8 @@ CREATE INDEX IF NOT EXISTS idx_bus_seats_bus_id ON bus_seats(bus_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_bus_id ON bookings(bus_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_travel_date ON bookings(travel_date);
+CREATE INDEX IF NOT EXISTS idx_payments_booking_id ON payments(booking_id);
+CREATE INDEX IF NOT EXISTS idx_payments_intent_id ON payments(stripe_payment_intent_id);
 CREATE INDEX IF NOT EXISTS idx_alerts_bus_id ON alerts(bus_id);
 CREATE INDEX IF NOT EXISTS idx_driver_locations_bus_id ON driver_locations(bus_id);
 CREATE INDEX IF NOT EXISTS idx_device_tokens_user_id ON device_tokens(user_id);
