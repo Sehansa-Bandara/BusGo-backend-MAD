@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { protect } = require('../middleware/authMiddleware');
 const {
   getAllBuses,
   getBusById,
@@ -9,6 +10,7 @@ const {
   getBusesByRoute,
   getSeatAvailability,
   getBusSeats,
+  getBusLocation,
 } = require('../controllers/busController');
 
 // GET /api/buses
@@ -31,6 +33,9 @@ router.get('/:id/seats', getBusSeats);
 
 // GET /api/buses/:id/stops (declared before /:id)
 router.get('/:id/stops', getBusStops);
+
+// GET /api/buses/:id/location (declared before /:id)
+router.get('/:id/location', protect, getBusLocation);
 
 // GET /api/buses/:id
 router.get('/:id', getBusById);
