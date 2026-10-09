@@ -11,6 +11,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const driverRoutes = require('./routes/driverRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/tickets', ticketRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/driver', driverRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Root Endpoint
 app.get('/', (req, res) => {

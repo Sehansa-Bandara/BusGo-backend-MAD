@@ -47,4 +47,23 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const requireAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, no token provided',
+    });
+  }
+
+  const role = (req.user.role || '').toLowerCase().trim();
+  if (role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Forbidden. Admin access required.',
+    });
+  }
+
+  next();
+};
+
+module.exports = { protect, requireAdmin };
