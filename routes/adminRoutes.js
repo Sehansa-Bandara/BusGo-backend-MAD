@@ -5,6 +5,8 @@ const {
   getAdminStats,
   getAdminItems,
   createAdminItem,
+  deleteAdminItem,
+  resetDatabase,
   getAdminIncidents,
 } = require('../controllers/adminController');
 
@@ -20,6 +22,12 @@ router.get('/items', getAdminItems);
 
 // POST /api/admin/items
 router.post('/items', createAdminItem);
+
+// DELETE /api/admin/items/:id
+router.delete('/items/:id', deleteAdminItem);
+
+// POST /api/admin/danger/reset
+router.post('/danger/reset', resetDatabase);
 
 // GET /api/admin/incidents
 router.get('/incidents', getAdminIncidents);
