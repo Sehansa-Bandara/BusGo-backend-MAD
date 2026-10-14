@@ -11,10 +11,14 @@ const {
   getSeatAvailability,
   getBusSeats,
   getBusLocation,
+  createBus,
 } = require('../controllers/busController');
 
 // GET /api/buses
 router.get('/', getAllBuses);
+
+// POST /api/buses
+router.post('/', protect, createBus);
 
 // GET /api/buses/search (declared before /:id)
 router.get('/search', searchBuses);
