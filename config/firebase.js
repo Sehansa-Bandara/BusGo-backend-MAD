@@ -1,36 +1,35 @@
-const admin = require('firebase-admin');
+const { initializeApp, cert, getApps } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const { getMessaging } = require('firebase-admin/messaging');
+const path = require('path');
+const fs = require('fs');
 
-let firebaseApp = null;
+const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
 
-try {
-  if (!admin.apps.length) {
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY
-      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-      : undefined;
+let app;
 
-    if (projectId && clientEmail && privateKey && !clientEmail.includes('your_firebase')) {
-      firebaseApp = admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId,
-          clientEmail,
-          privateKey,
-        }),
-      });
-      console.log('Firebase Admin SDK initialized with service account certificate');
-    } else {
-      // Default initialization
-      firebaseApp = admin.initializeApp({
-        projectId: projectId && !projectId.includes('your_firebase') ? projectId : 'busgo-app',
-      });
-      console.log('Firebase Admin SDK initialized in default mode');
-    }
+if (getApps().length === 0) {
+  if (fs.existsSync(serviceAccountPath)) {
+    const serviceAccount = require(serviceAccountPath);
+    app = initializeApp({
+      credential: cert(serviceAccount),
+    });
   } else {
-    firebaseApp = admin.app();
+    app = initializeApp();
   }
-} catch (error) {
-  console.warn('Firebase Admin SDK initialization warning:', error.message);
+} else {
+  app = getApps()[0];
 }
 
-module.exports = admin;
+const db = getFirestore(app);
+
+// Provide backward compatible admin object with messaging() method
+const admin = {
+  app,
+  messaging: () => getMessaging(app),
+};
+
+module.exports = {
+  admin,
+  db,
+};
