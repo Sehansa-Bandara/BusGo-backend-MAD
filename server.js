@@ -12,6 +12,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const driverRoutes = require('./routes/driverRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const { verifySmtpConnection } = require('./config/emailService');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -77,9 +78,10 @@ app.use(notFoundHandler);
 // Handle Unexpected Server Errors
 app.use(errorHandler);
 
-// Start Server
-app.listen(PORT, () => {
+// Start Server & Verify SMTP Connection
+app.listen(PORT, async () => {
   console.log(`BusGo Backend Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  await verifySmtpConnection();
 });
 
 module.exports = app;
