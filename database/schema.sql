@@ -202,6 +202,16 @@ CREATE TABLE IF NOT EXISTS device_tokens (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Places Table (matching user schema: "busId", "driverId", "from", "to")
+CREATE TABLE IF NOT EXISTS places (
+    id SERIAL PRIMARY KEY,
+    "busId" INT REFERENCES buses(id) ON DELETE CASCADE,
+    "driverId" INT REFERENCES users(id) ON DELETE SET NULL,
+    "from" VARCHAR(100) NOT NULL,
+    "to" VARCHAR(100) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 3. Create Indexes
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
@@ -218,4 +228,6 @@ CREATE INDEX IF NOT EXISTS idx_payments_intent_id ON payments(stripe_payment_int
 CREATE INDEX IF NOT EXISTS idx_alerts_bus_id ON alerts(bus_id);
 CREATE INDEX IF NOT EXISTS idx_driver_locations_bus_id ON driver_locations(bus_id);
 CREATE INDEX IF NOT EXISTS idx_device_tokens_user_id ON device_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_places_bus_id ON places("busId");
+
 

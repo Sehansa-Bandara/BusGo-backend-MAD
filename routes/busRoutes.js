@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
 const {
   getAllBuses,
+  getMyDriverBuses,
   getBusById,
   searchBuses,
   getBusStops,
@@ -16,6 +17,9 @@ const {
 
 // GET /api/buses
 router.get('/', getAllBuses);
+
+// GET /api/buses/my
+router.get('/my', protect, getMyDriverBuses);
 
 // POST /api/buses
 router.post('/', protect, createBus);
